@@ -1,0 +1,15 @@
+# Visual Studio / .NET
+.vs/
+[Bb]in/
+[Oo]bj/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Environment variables
+.env
+
+# Operating System files
+Thumbs.db
+.DS_Store

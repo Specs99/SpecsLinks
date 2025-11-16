@@ -1,0 +1,45 @@
+functionsDirectory = "C:\\Users\\Specs\\source\\repos\\Specs\\Specs\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+redirectsOrigin = "config"
+headers = []
+
+[build]
+publish = "C:\\Users\\Specs\\source\\repos\\Specs\\Specs"
+publishOrigin = "config"
+functions = "C:\\Users\\Specs\\source\\repos\\Specs\\Specs\\netlify\\functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[plugins]]
+origin = "ui"
+package = "@netlify/plugin-lighthouse"
+
+[plugins.inputs]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

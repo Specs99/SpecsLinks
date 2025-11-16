@@ -1,0 +1,14 @@
+# Main build settings
+[build]
+  # This tells Netlify where your serverless functions are.
+  functions = "netlify/functions"
+  # This tells Netlify that your index.html is in the root of the project.
+  publish = "."
+
+# This rule is ESSENTIAL for Single Page Applications.
+# It makes sure that requests like /.netlify/functions/login are handled correctly
+# instead of returning a 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
