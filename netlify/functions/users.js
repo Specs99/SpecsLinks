@@ -1,60 +1,52 @@
-// netlify/functions/users.js
+const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const { DATABASE_URL, JWT_SECRET } = process.env;
 
-// Helper function to verify the token from the request headers
-const verifyToken = (event) => {
-    if (!JWT_SECRET) throw new Error("JWT_SECRET environment variable not set.");
+// This helper function checks for a valid admin token in the request headers
+const verifyAdmin = (event) => {
     const authHeader = event.headers.authorization;
-    if (!authHeader) return null;
+    if (!authHeader) return false;
 
     const token = authHeader.split(' ')[1];
     try {
-        return jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET);
+        // Only return true if the token is valid AND the user has the 'admin' role
+        return decoded.role === 'admin';
     } catch (e) {
-        return null; // Invalid token
+        return false;
     }
 };
 
 exports.handler = async (event) => {
-    const decodedToken = verifyToken(event);
-    
-    if (!decodedToken || decodedToken.role !== 'admin') {
-        return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized: Access is denied' }) };
+    // Protect this endpoint: Only admins should be able to see the user list.
+    if (!verifyAdmin(event)) {
+        return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
     }
 
-    const { db } = event.netlify.sdk;
+    const pool = new Pool({
+        connectionString: DATABASE_URL,
+        ssl: { rejectUnauthorized: false }
+    });
 
-    // GET all users
-    if (event.httpMethod === 'GET') {
-        const users = await db.get('users') || [];
-        return { statusCode: 200, body: JSON.stringify(users) };
-    }
-
-    // POST a new user
-    if (event.httpMethod === 'POST') {
-        const newUser = JSON.parse(event.body);
-        if (!newUser.username || !newUser.password) {
-            return { statusCode: 400, body: JSON.stringify({ error: 'Username and password are required.' }) };
+    try {
+        // GET Request: Fetch all users
+        if (event.httpMethod === 'GET') {
+            const result = await pool.query('SELECT id, username, role, created_at FROM users ORDER BY created_at DESC');
+            return {
+                statusCode: 200,
+                body: JSON.stringify(result.rows),
+            };
         }
-        
-        // IMPORTANT: HASH THE PASSWORD before saving in a real app!
-        // newUser.password = await bcrypt.hash(newUser.password, 10);
-        
-        newUser.id = `user_${Date.now()}`;
-        newUser.createdAt = new Date().toISOString();
 
-        let users = await db.get('users') || [];
-        users.push(newUser);
-        
-        await db.set('users', users);
-        
-        return {
-            statusCode: 201,
-            body: JSON.stringify({ message: `User '${newUser.username}' created successfully!` }),
-        };
+        // You can add logic for POST (create user), DELETE, etc. here later
+
+        return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
+
+    } catch (error) {
+        console.error("Error in users.js function:", error);
+        return { statusCode: 500, body: JSON.stringify({ error: 'Failed to process user data.' }) };
+    } finally {
+        await pool.end();
     }
-
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
 };
