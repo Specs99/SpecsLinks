@@ -2015,123 +2015,6 @@
             </div>
         </div>
     </div>
-    // --- DATA LOADING & RENDERING ---
-    function loadOverlayData(overlayId) {
-    const actions = {
-    'admin-dashboard': loadDashboardData,
-    'admin-panel': loadAdminData,
-    'download-config': loadLinksData,
-    'admin-support': loadSupportData,
-    'user-downloads': loadUserDownloads,
-    'user-support': loadUserTickets,
-    };
-    actions[overlayId]?.();
-    }
-
-    // Placeholder for dashboard data (requires backend implementation)
-    async function loadDashboardData() {
-    document.getElementById('total-users').textContent = '...';
-    showNotification('Loading Dashboard data...', 'info');
-    // This is where you would call: apiFetch('dashboard').then(data => {...});
-    }
-
-    // Placeholder for admin data (requires backend implementation)
-    async function loadAdminData() {
-    document.getElementById('user-list').innerHTML = '<tr><td colspan="8" style="text-align: center;">Loading users...</td></tr>';
-    showNotification('Loading User Management data...', 'info');
-    // This is where you would call: apiFetch('users').then(data => updateUsersList(data));
-    }
-
-    // --- UI HELPERS ---
-    function showLoader(text = "Loading SpecsLinks...") {
-    const loader = document.getElementById('full-page-loader');
-    if(loader) {
-    loader.classList.add('show');
-    loader.querySelector('.loader-text').textContent = text;
-    }
-    }
-    function hideLoader() { document.getElementById('full-page-loader')?.classList.remove('show'); }
-
-    function showNotification(message, type = 'info') {
-    const container = document.getElementById('notification-container');
-    if (!container) return;
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
-    notification.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${message}`;
-    container.appendChild(notification);
-
-    // Auto-hide after 5 seconds
-    const timer = setTimeout(() => {
-    notification.classList.add('hide');
-    }, 5000);
-
-    // Remove the element completely after the hide animation finishes
-    notification.addEventListener('animationend', () => {
-    if (notification.classList.contains('hide')) {
-    notification.remove();
-    clearTimeout(timer);
-    }
-    }, { once: true });
-    }
-
-    function createParticles() {
-    const container = document.getElementById('particles');
-    if (!container || container.children.length > 0) return;
-    // ... (Particle creation logic kept intact)
-    const colors = ['rgba(204, 0, 0, 0.2)', 'rgba(255, 204, 0, 0.2)', 'rgba(255, 255, 255, 0.1)'];
-    for (let i = 0; i < 80; i++) {
-    const particle = document.createElement('div');
-    particle.classList.add('particle');
-    const size = Math.random() * 8 + 3;
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.background = color;
-    particle.style.top = `${Math.random() * 100}%`;
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.animationDuration = `${Math.random() * 20 + 15}s`;
-    particle.style.animationDelay = `${Math.random() * 10}s`;
-    container.appendChild(particle);
-    setTimeout(() => {
-    particle.style.opacity = 1;
-    }, Math.random() * 500);
-    }
-    }
-
-    // --- PLACEHOLDER FUNCTIONS ---
-    // These now correctly call the showNotification function
-    function handleAddLink(e) { e.preventDefault(); showNotification('Add Link feature requires backend implementation.', 'info'); }
-    function handleSupportTicket(e) { e.preventDefault(); showNotification('Support Ticket feature requires backend implementation.', 'info'); }
-    function loadLinksData() { showNotification('Loading Download Config data...', 'info'); }
-    function loadSupportData() { showNotification('Loading Support Center data...', 'info'); }
-    function loadUserDownloads() { showNotification('Loading User Downloads data...', 'info'); }
-    function loadUserTickets() { showNotification('Loading User Tickets data...', 'info'); }
-    function togglePasswordVisibility() { /* ... kept simple ... */ }
-    function toggleNewPasswordVisibility() { /* ... kept simple ... */ }
-    function toggleAccountType(type) { /* ... kept simple ... */ }
-    function applyStatCardObserver(containerElement) { /* ... kept simple ... */ }
-    function deleteUser(id) { showNotification(`Attempting to delete user ${id}...`, 'warning'); }
-    function editUser(id) { showNotification(`Attempting to edit user ${id}...`, 'info'); }
-    function viewUserDetails(id) { showNotification(`Viewing user details for ${id}...`, 'info'); }
-    function deleteLink(id) { showNotification(`Attempting to delete link ${id}...`, 'warning'); }
-    function previewLink(id) { showNotification(`Previewing link ${id}...`, 'info'); }
-    function deleteTicket(id) { showNotification(`Attempting to delete ticket ${id}...`, 'warning'); }
-    function resolveTicket(id) { showNotification(`Resolving ticket ${id}...`, 'success'); }
-    function exportUsers() { showNotification('Exporting user data...', 'info'); }
-    function showBulkActionModal() { showNotification('Showing bulk action modal...', 'info'); }
-    function executeBulkAction() { showNotification('Executing bulk action...', 'success'); }
-    function selectAllUsers() { showNotification('Selecting all users...', 'info'); }
-    function deselectAllUsers() { showNotification('Deselecting all users...', 'info'); }
-    function filterUsers() { /* ... */ }
-    function filterLinks() { /* ... */ }
-    function filterTickets() { /* ... */ }
-    function filterUserDownloads() { /* ... */ }
-    function showFAQ() { showNotification('Showing FAQ Modal...', 'info'); }
-    function showDownloadGuide() { showNotification('Showing Download Guide Modal...', 'info'); }
-    function showTroubleshooting() { showNotification('Showing Troubleshooting Modal...', 'info'); }
-    function showContactInfo() { showNotification('Showing Contact Info Modal...', 'info'); }
-    function generateReport(type) { showNotification(`Generating ${type} report...`, 'info'); }
     <script>
         // --- GLOBAL STATE ---
         let currentUser = null;
@@ -2365,7 +2248,6 @@
             // This is where you would call: apiFetch('users').then(data => updateUsersList(data));
         }
 
-
         // --- UI HELPERS ---
         function showLoader(text = "Loading SpecsLinks...") {
             const loader = document.getElementById('full-page-loader');
@@ -2376,10 +2258,6 @@
         }
         function hideLoader() { document.getElementById('full-page-loader')?.classList.remove('show'); }
 
-        /**
-         * FIX: Implemented proper use of notification structure and timer removal.
-         * The key is using the 'hide' class and the animationend event.
-         */
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notification-container');
             if (!container) return;
@@ -2387,7 +2265,7 @@
             notification.className = `notification ${type}`;
             const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
             notification.innerHTML = `<i class="fas fa-${icons[type] || 'info-circle'}"></i> ${message}`;
-            container.appendChild(notification);
+            container.appendChild(notification); 
 
             // Auto-hide after 5 seconds
             const timer = setTimeout(() => {
@@ -2429,6 +2307,8 @@
 
         // --- PLACEHOLDER FUNCTIONS ---
         // These now correctly call the showNotification function
+        function handleAddLink(e) { e.preventDefault(); showNotification('Add Link feature requires backend implementation.', 'info'); }
+        function handleSupportTicket(e) { e.preventDefault(); showNotification('Support Ticket feature requires backend implementation.', 'info'); }
         function loadLinksData() { showNotification('Loading Download Config data...', 'info'); }
         function loadSupportData() { showNotification('Loading Support Center data...', 'info'); }
         function loadUserDownloads() { showNotification('Loading User Downloads data...', 'info'); }
